@@ -1,0 +1,25 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'com.upc.gessi.qrapids'
+version = '0.1'
+
+description = """"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+javadoc {
+    source = file('src/main/java/Forecast')
+    destinationDir = file('docs/javadoc')
+    options.addStringOption("nonavbar", "-quiet")
+}
+
+repositories {
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+
+dependencies {
+    compile group: 'org.nuiton.thirdparty', name: 'Rserve', version:'1.7-3'
+    compile group: 'org.nuiton.thirdparty', name: 'REngine', version:'1.7-3'
+}
