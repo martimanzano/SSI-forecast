@@ -9,6 +9,7 @@ public class ForecastDTO {
     private double[] upper80;
     private double[] upper95;
     private String id;
+    private String error;
 
     public ForecastDTO() {
         this.lower80 = new double[]{0};
@@ -17,18 +18,21 @@ public class ForecastDTO {
         this.upper80 = new double[]{0};
         this.upper95 = new double[]{0};
         this.id = "";
+        this.error = "";
     }
 
-    public ForecastDTO(String ID) {
-        this.id = ID;
+    public ForecastDTO(String id, String error) {
+        this.id = id;
+        this.error = error;
     }
 
-    public ForecastDTO(double[] lower80, double[] lower95, double[] mean, double[] upper80, double[] upper95) {
+    public ForecastDTO(String id, double[] lower80, double[] lower95, double[] mean, double[] upper80, double[] upper95) {
         this.lower80 = lower80;
         this.lower95 = lower95;
         this.mean = mean;
         this.upper80 = upper80;
         this.upper95 = upper95;
+        this.id = id;
     }
 
     public double[] getLower80() {
@@ -86,12 +90,17 @@ public class ForecastDTO {
 
     @Override
     public String toString() {
-        return  "\nID:                            " + this.id +
-                "\nLower 80 conf. Pred. Interval: " + Arrays.toString(lower80) +
-                "\nLower 95 conf. Pred. Interval: " + Arrays.toString(lower95) +
-                "\nMean:                          " + Arrays.toString(mean) +
-                "\nUpper 80 conf. Pred. Interval: " + Arrays.toString(upper80) +
-                "\nUpper 95 conf. Pred. Interval: " + Arrays.toString(upper95) +
-                "\n";
+        if (error == null) {
+            return "\nID:                            " + this.id +
+                    "\nLower 80 conf. Pred. Interval: " + Arrays.toString(lower80) +
+                    "\nLower 95 conf. Pred. Interval: " + Arrays.toString(lower95) +
+                    "\nMean:                          " + Arrays.toString(mean) +
+                    "\nUpper 80 conf. Pred. Interval: " + Arrays.toString(upper80) +
+                    "\nUpper 95 conf. Pred. Interval: " + Arrays.toString(upper95) +
+                    "\n";
+        } else {
+            return "\nID:                            " + this.id +
+                    "\nR ERROR: " + this.error;
+        }
     }
 }

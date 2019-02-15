@@ -32,54 +32,55 @@ public class Common {
     static void evaluateR(RConnection rconnection, String Rcode)
             throws REXPMismatchException, REngineException {
         REXP rResponseObject = null;
-        try {
+        rResponseObject = rconnection.parseAndEval(
+                "try(eval(" + Rcode + "))");
+
+        if (rResponseObject.inherits("try-error")) {
+            System.out.println("ERROR: R Serve Eval Exception : " + rResponseObject.asString());
+            if (Rcode.toLowerCase().contains("train")) {
+                throw new ArithmeticException(rResponseObject.asString()); //If there's an exception during training, we rethrow it in a controlled way
+            } else {
+                throw new REXPMismatchException(rResponseObject, rResponseObject.asString());
+            }
+        } else {
+            System.out.println("EVAL OK: " + Rcode);// + rResponseObject.asString());
+        }
+    }
+
+        static ForecastDTO evaluateRforecast(RConnection rconnection, String Rcode, String elementName)
+                throws REngineException, REXPMismatchException {
+            REXP rResponseObject = null;
             rResponseObject = rconnection.parseAndEval(
                     "try(eval(" + Rcode + "))");
 
             if (rResponseObject.inherits("try-error")) {
                 System.out.println("ERROR: R Serve Eval Exception : " + rResponseObject.asString());
-                throw new REXPMismatchException(rResponseObject, rResponseObject.asString());
+                //throw new REXPMismatchException(rResponseObject, rResponseObject.asString());
+                return new ForecastDTO(elementName, rResponseObject.asString()); // We only catch R internal errors. Java errors are thrown up
             } else {
                 System.out.println("EVAL OK: " + Rcode);// + rResponseObject.asString());
+                RList rlist =  rResponseObject.asList();
+                ForecastDTO forecast = new ForecastDTO(
+                        elementName,
+                        rlist.at(0).asDoubles(), //lower80
+                        rlist.at(1).asDoubles(), //lower95
+                        rlist.at(2).asDoubles(), //mean
+                        rlist.at(3).asDoubles(), //upper80
+                        rlist.at(4).asDoubles());//upper95
+
+                return forecast;
             }
-
-        } catch (REngineException e) {
-            e.printStackTrace();
-            throw e;
-        } catch (REXPMismatchException e) {
-            e.printStackTrace();
-            throw e;
         }
-    }
 
-        static ForecastDTO evaluateRforecast(RConnection rconnection, String Rcode)
-                throws REngineException, REXPMismatchException {
+        static String getModelsDirectory(RConnection rconnection) throws REXPMismatchException, REngineException {
             REXP rResponseObject = null;
-            try {
-                rResponseObject = rconnection.parseAndEval(
-                        "try(eval(" + Rcode + "))");
+            rResponseObject = rconnection.parseAndEval("try(eval(paste(getwd(), directoryToSave, sep = '/')))");
 
-                if (rResponseObject.inherits("try-error")) {
-                    System.out.println("ERROR: R Serve Eval Exception : " + rResponseObject.asString());
-                    throw new REXPMismatchException(rResponseObject, rResponseObject.asString());
-                } else {
-                    System.out.println("EVAL OK: " + Rcode);// + rResponseObject.asString());
-                    RList rlist =  rResponseObject.asList();
-                    ForecastDTO forecast = new ForecastDTO(
-                            rlist.at(0).asDoubles(), //lower80
-                            rlist.at(1).asDoubles(), //lower95
-                            rlist.at(2).asDoubles(), //mean
-                            rlist.at(3).asDoubles(), //upper80
-                            rlist.at(4).asDoubles());//upper95
-                    return forecast;
-                }
-
-            } catch (REngineException e) {
-                e.printStackTrace();
-                throw e;
-            } catch (REXPMismatchException e) {
-                e.printStackTrace();
-                throw e;
+            if (rResponseObject.inherits("try-error")) {
+                System.out.println("ERROR: R Serve Eval Exception : " + rResponseObject.asString());
+                throw new REXPMismatchException(rResponseObject, rResponseObject.asString());
+            } else {
+                return rResponseObject.asString();
             }
         }
         //rResponseObject.asList().at(4).asDoubles()

@@ -132,6 +132,10 @@ public class Elastic_RForecast {
         this.rconnection.close();
     }
 
+    public String getModelsDirectory() throws REXPMismatchException, REngineException {
+        return Common.getModelsDirectory(this.rconnection);
+    }
+
 
     private void sourceTimeSeriesFunctions() throws REXPMismatchException, REngineException {
         //SOURCE TIME SERIES FUNCTIONS
@@ -168,12 +172,20 @@ public class Elastic_RForecast {
      * @throws REXPMismatchException
      * @throws REngineException
      */
-    public void multipleElementTrain(String elementNames[], String index, String tsFrequency,
+    public String[] multipleElementTrain(String elementNames[], String index, String tsFrequency,
                                                           Common.ForecastTechnique technique)
             throws REXPMismatchException, REngineException {
-        for (String elementName : elementNames) {
-            trainForecastModel(elementName, index, tsFrequency, technique);
+        String trainResult[] = new String[elementNames.length];
+
+        for (int i = 0; i < elementNames.length; i++) {
+            try {
+                trainForecastModel(elementNames[i], index, tsFrequency, technique);
+                trainResult[i] = "OK";
+            } catch (ArithmeticException e) {
+                trainResult[i] = e.getMessage();
+            }
         }
+        return trainResult;
     }
 
     /**
@@ -340,7 +352,7 @@ public class Elastic_RForecast {
                 "forceSeasonality = " + forceSeasonality + ", frequencyts = " + frequencyts + ", " +
                 "horizon = " + tsForecastHorizon + ")";
 
-        return Common.evaluateRforecast(this.rconnection, arimaForecastCall).setIDandReturn(elementName);
+        return Common.evaluateRforecast(this.rconnection, arimaForecastCall, elementName);
     }
 
     private void trainThetaModel(String elementName, String index, String frequencyts)
@@ -356,7 +368,7 @@ public class Elastic_RForecast {
         String thetaForecastCall = "forecastThetaWrapper(name = \"" + elementName + "\", " + "index = \"" + index + "\", " +
                 "frequencyts = " + frequencyts + ", " + "horizon = " + tsForecastHorizon + ")";
 
-        return Common.evaluateRforecast(this.rconnection, thetaForecastCall).setIDandReturn(elementName);
+        return Common.evaluateRforecast(this.rconnection, thetaForecastCall, elementName);
     }
 
     private void trainETSModel(String elementName, String index, String forceDamped, String frequencyts)
@@ -374,7 +386,7 @@ public class Elastic_RForecast {
                 "forceDamped = " + forceDamped + ", frequencyts = " + frequencyts + ", " +
                 "horizon = " + tsForecastHorizon + ")";
 
-        return Common.evaluateRforecast(this.rconnection, etsForecastCall).setIDandReturn(elementName);
+        return Common.evaluateRforecast(this.rconnection, etsForecastCall, elementName);
     }
 
     private void trainBaggedETSModel(String elementName, String index, String frequencyts)
@@ -390,7 +402,7 @@ public class Elastic_RForecast {
         String baggedETSForecastCall = "forecastBaggedETSWrapper(name = \"" + elementName + "\", " + "index = \"" + index + "\", " +
                 "frequencyts = " + frequencyts + ", " + "horizon = " + tsForecastHorizon + ")";
 
-        return Common.evaluateRforecast(this.rconnection, baggedETSForecastCall).setIDandReturn(elementName);
+        return Common.evaluateRforecast(this.rconnection, baggedETSForecastCall, elementName);
     }
 
     private void trainSTLModel(String elementName, String index, String frequencyts)
@@ -406,7 +418,7 @@ public class Elastic_RForecast {
         String baggedETSForecastCall = "forecastSTLWrapper(name = \"" + elementName + "\", " + "index = \"" + index + "\", " +
                 "frequencyts = " + frequencyts + ", " + "horizon = " + tsForecastHorizon + ")";
 
-        return Common.evaluateRforecast(this.rconnection, baggedETSForecastCall).setIDandReturn(elementName);
+        return Common.evaluateRforecast(this.rconnection, baggedETSForecastCall, elementName);
     }
 
     private void trainNNModel(String elementName, String index, String frequencyts)
@@ -422,7 +434,7 @@ public class Elastic_RForecast {
         String NNForecastCall = "forecastNNWrapper(name = \"" + elementName + "\", " + "index = \"" + index + "\", " +
                 "frequencyts = " + frequencyts + ", " + "horizon = " + tsForecastHorizon + ")";
 
-        return Common.evaluateRforecast(this.rconnection, NNForecastCall).setIDandReturn(elementName);
+        return Common.evaluateRforecast(this.rconnection, NNForecastCall, elementName);
     }
 
     private void trainHybridModel(String elementName, String index, String cvHorizon, String frequencyts)
@@ -438,7 +450,7 @@ public class Elastic_RForecast {
         String hybridForecastCall = "forecastHybridWrapper(name = \"" + elementName + "\", " + "index = \"" + index + "\", " +
                 "frequencyts = " + frequencyts + ", " + "horizon = " + tsForecastHorizon + ")";
 
-        return Common.evaluateRforecast(this.rconnection, hybridForecastCall).setIDandReturn(elementName);
+        return Common.evaluateRforecast(this.rconnection, hybridForecastCall, elementName);
     }
 
     private void trainProphetModel(String elementName, String index)
@@ -453,6 +465,6 @@ public class Elastic_RForecast {
         String prophetForecastCall = "forecastProphetWrapper(name = \"" + elementName + "\", " + "index = \"" + index + "\", " +
                 "horizon = " + tsForecastHorizon + ")";
 
-        return Common.evaluateRforecast(this.rconnection, prophetForecastCall).setIDandReturn(elementName);
+        return Common.evaluateRforecast(this.rconnection, prophetForecastCall, elementName);
     }
 }
