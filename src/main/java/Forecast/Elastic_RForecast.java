@@ -5,6 +5,7 @@ import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RConnection;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Elastic_RForecast {
     private String es_host;
@@ -154,6 +155,14 @@ public class Elastic_RForecast {
 
         Common.evaluateR(this.rconnection, elasticSearchConnection);
         System.out.println("ELASTIC SEARCH CONNECTION SUCCESSFUL");// + rResponseObject.asString());
+    }
+
+    /**
+     * Get the names of the forecasting techniques available
+     * @return Common.ForecastingTechnique[]
+     */
+    public static Common.ForecastTechnique[] getForecastTechniques () {
+        return Common.ForecastTechnique.values();
     }
 
     /**

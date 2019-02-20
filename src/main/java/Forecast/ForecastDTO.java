@@ -75,16 +75,24 @@ public class ForecastDTO {
         this.upper95 = upper95;
     }
 
-    public String getID() {
+    public String getId() {
         return id;
     }
 
-    public void setID(String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
     public ForecastDTO setIDandReturn(String id) {
-        this.setID(id);
+        this.setId(id);
         return this;
     }
 
