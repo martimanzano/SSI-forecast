@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 public class ForecastTests {
-    private String es_host = "";
+    private String es_host = "localhost";
     private int es_port = 9200;
     private String Rscriptslocation = "C:/NewTimeSeriesFunctions.R";
     private Elastic_RForecast rForecast;
@@ -29,7 +29,7 @@ public class ForecastTests {
 
     @Test
     public void test_training_arima() throws REXPMismatchException, REngineException, IOException {
-        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + "Arima";
+        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + Common.ForecastTechnique.ARIMA.toString();
         Files.deleteIfExists(new File(pathToFile).toPath());
 
         rForecast.trainForecastModel(metricName, indexMetrics, tsFrequency, Common.ForecastTechnique.ARIMA);
@@ -38,7 +38,7 @@ public class ForecastTests {
 
     @Test
     public void test_training_arima_force_seasonality() throws REXPMismatchException, REngineException, IOException {
-        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + "ArimaFS";
+        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + Common.ForecastTechnique.ARIMA_FORCE_SEASONALITY.toString();
         Files.deleteIfExists(new File(pathToFile).toPath());
 
         rForecast.trainForecastModel(metricName, indexMetrics, tsFrequency, Common.ForecastTechnique.ARIMA_FORCE_SEASONALITY);
@@ -47,7 +47,7 @@ public class ForecastTests {
 
     @Test
     public void test_training_theta() throws REXPMismatchException, REngineException, IOException {
-        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + "Theta";
+        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + Common.ForecastTechnique.THETA.toString();
         Files.deleteIfExists(new File(pathToFile).toPath());
 
         rForecast.trainForecastModel(metricName, indexMetrics, tsFrequency, Common.ForecastTechnique.THETA);
@@ -56,7 +56,7 @@ public class ForecastTests {
 
     @Test
     public void test_training_ets() throws REXPMismatchException, REngineException, IOException {
-        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + "ETS";
+        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + Common.ForecastTechnique.ETS.toString();
         Files.deleteIfExists(new File(pathToFile).toPath());
 
         rForecast.trainForecastModel(metricName, indexMetrics, tsFrequency, Common.ForecastTechnique.ETS);
@@ -65,7 +65,7 @@ public class ForecastTests {
 
     @Test
     public void test_training_etsdamped() throws REXPMismatchException, REngineException, IOException {
-        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + "ETSFD";
+        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + Common.ForecastTechnique.ETSDAMPED.toString();
         Files.deleteIfExists(new File(pathToFile).toPath());
 
         rForecast.trainForecastModel(metricName, indexMetrics, tsFrequency, Common.ForecastTechnique.ETSDAMPED);
@@ -74,7 +74,7 @@ public class ForecastTests {
 
     @Test
     public void test_training_baggedets() throws REXPMismatchException, REngineException, IOException {
-        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + "BaggedETS";
+        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + Common.ForecastTechnique.BAGGEDETS.toString();
         Files.deleteIfExists(new File(pathToFile).toPath());
 
         rForecast.trainForecastModel(metricName, indexMetrics, tsFrequency, Common.ForecastTechnique.BAGGEDETS);
@@ -83,7 +83,7 @@ public class ForecastTests {
 
     @Test
     public void test_training_stl() throws REXPMismatchException, REngineException, IOException {
-        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + "STL";
+        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + Common.ForecastTechnique.STL.toString();
         Files.deleteIfExists(new File(pathToFile).toPath());
 
         rForecast.trainForecastModel(metricName, indexMetrics, tsFrequency, Common.ForecastTechnique.STL);
@@ -92,7 +92,7 @@ public class ForecastTests {
 
     @Test
     public void test_training_NN() throws REXPMismatchException, REngineException, IOException {
-        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + "NN";
+        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + Common.ForecastTechnique.NN.toString();
         Files.deleteIfExists(new File(pathToFile).toPath());
 
         rForecast.trainForecastModel(metricName, indexMetrics, tsFrequency, Common.ForecastTechnique.NN);
@@ -101,7 +101,7 @@ public class ForecastTests {
 
     @Test
     public void test_training_Hybrid() throws REXPMismatchException, REngineException, IOException {
-        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + "Hybrid";
+        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + Common.ForecastTechnique.HYBRID.toString();
         Files.deleteIfExists(new File(pathToFile).toPath());
 
         rForecast.trainForecastModel(metricName, indexMetrics, tsFrequency, Common.ForecastTechnique.HYBRID);
@@ -110,14 +110,12 @@ public class ForecastTests {
 
     @Test
     public void test_training_Prophet() throws REXPMismatchException, REngineException, IOException {
-        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + "Prophet";
+        String pathToFile = sd + "/" + metricName + "_" + indexMetrics + "_" + Common.ForecastTechnique.PROPHET.toString();
         Files.deleteIfExists(new File(pathToFile).toPath());
 
         rForecast.trainForecastModel(metricName, indexMetrics, tsFrequency, Common.ForecastTechnique.PROPHET);
         Assert.assertTrue(Files.exists(new File(pathToFile).toPath()));
     }
-
-
 
     @AfterClass
     public void close() {

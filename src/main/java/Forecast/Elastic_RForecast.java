@@ -137,7 +137,6 @@ public class Elastic_RForecast {
         return Common.getModelsDirectory(this.rconnection);
     }
 
-
     private void sourceTimeSeriesFunctions() throws REXPMismatchException, REngineException {
         //SOURCE TIME SERIES FUNCTIONS
         String sourceFunctionsStatement = "source(\"" + this.Rfunctions_path + "\")";
@@ -161,8 +160,13 @@ public class Elastic_RForecast {
      * Get the names of the forecasting techniques available
      * @return Common.ForecastingTechnique[]
      */
-    public static Common.ForecastTechnique[] getForecastTechniques () {
-        return Common.ForecastTechnique.values();
+    public Common.ForecastTechnique[] getForecastTechniques () throws REXPMismatchException, REngineException {
+        String scriptAvailableMethods[] = Common.getAvailableMethods(this.rconnection);
+        Common.ForecastTechnique availableToReturn[] = new Common.ForecastTechnique[scriptAvailableMethods.length];
+        for (int i = 0; i < scriptAvailableMethods.length; i++) {
+            availableToReturn[i] = Common.ForecastTechnique.valueOf(scriptAvailableMethods[i]);
+        }
+        return availableToReturn;
     }
 
     /**

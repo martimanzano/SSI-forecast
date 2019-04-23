@@ -47,50 +47,49 @@ public class Common {
         }
     }
 
-        static ForecastDTO evaluateRforecast(RConnection rconnection, String Rcode, String elementName)
-                throws REngineException, REXPMismatchException {
-            REXP rResponseObject = null;
-            rResponseObject = rconnection.parseAndEval(
-                    "try(eval(" + Rcode + "))");
+    static ForecastDTO evaluateRforecast(RConnection rconnection, String Rcode, String elementName)
+            throws REngineException, REXPMismatchException {
+        REXP rResponseObject = null;
+        rResponseObject = rconnection.parseAndEval(
+                "try(eval(" + Rcode + "))");
 
-            if (rResponseObject.inherits("try-error")) {
-                System.out.println("ERROR: R Serve Eval Exception : " + rResponseObject.asString());
-                //throw new REXPMismatchException(rResponseObject, rResponseObject.asString());
-                return new ForecastDTO(elementName, rResponseObject.asString()); // We only catch R internal errors. Java errors are thrown up
-            } else {
-                System.out.println("EVAL OK: " + Rcode);// + rResponseObject.asString());
-                RList rlist =  rResponseObject.asList();
-                ForecastDTO forecast = new ForecastDTO(
-                        elementName,
-                        rlist.at(0).asDoubles(), //lower80
-                        rlist.at(1).asDoubles(), //lower95
-                        rlist.at(2).asDoubles(), //mean
-                        rlist.at(3).asDoubles(), //upper80
-                        rlist.at(4).asDoubles());//upper95
+        if (rResponseObject.inherits("try-error")) {
+            System.out.println("ERROR: R Serve Eval Exception : " + rResponseObject.asString());
+            //throw new REXPMismatchException(rResponseObject, rResponseObject.asString());
+            return new ForecastDTO(elementName, rResponseObject.asString()); // We only catch R internal errors. Java errors are thrown up
+        } else {
+            System.out.println("EVAL OK: " + Rcode);// + rResponseObject.asString());
+            RList rlist =  rResponseObject.asList();
+            ForecastDTO forecast = new ForecastDTO(
+                    elementName,
+                    rlist.at(0).asDoubles(), //lower80
+                    rlist.at(1).asDoubles(), //lower95
+                    rlist.at(2).asDoubles(), //mean
+                    rlist.at(3).asDoubles(), //upper80
+                    rlist.at(4).asDoubles());//upper95
 
-                return forecast;
-            }
+            return forecast;
         }
+    }
 
-        static String getModelsDirectory(RConnection rconnection) throws REXPMismatchException, REngineException {
-            REXP rResponseObject = null;
-            rResponseObject = rconnection.parseAndEval("try(eval(paste(getwd(), directoryToSave, sep = '/')))");
+    static String getModelsDirectory(RConnection rconnection) throws REXPMismatchException, REngineException {
+        String getwd = "try(eval(paste(getwd(), directoryToSave, sep = '/')))";
+        return getRvariable(rconnection, getwd)[0];
+    }
 
-            if (rResponseObject.inherits("try-error")) {
-                System.out.println("ERROR: R Serve Eval Exception : " + rResponseObject.asString());
-                throw new REXPMismatchException(rResponseObject, rResponseObject.asString());
-            } else {
-                return rResponseObject.asString();
-            }
+    static String[] getAvailableMethods(RConnection rconnection) throws REXPMismatchException, REngineException {
+        return getRvariable(rconnection,"stringMethods");
+    }
+
+    static String[] getRvariable(RConnection rconnection, String Rvariable) throws REXPMismatchException, REngineException {
+        REXP rResponseObject = null;
+        rResponseObject = rconnection.parseAndEval("try(eval(" + Rvariable + "))");
+
+        if (rResponseObject.inherits("try-error")) {
+            System.out.println("ERROR: R Serve Eval Exception : " + rResponseObject.asString());
+            throw new REXPMismatchException(rResponseObject, rResponseObject.asString());
+        } else {
+            return rResponseObject.asStrings();
         }
-        //rResponseObject.asList().at(4).asDoubles()
-
-//    private static double[] getDoubles(RList rlist, int pos) {
-//        try {
-//            return rlist.at(pos).asDoubles();
-//        } catch (Exception) {
-//            return
-//        }
-//    }
-
+    }
 }
