@@ -137,6 +137,10 @@ public class Elastic_RForecast {
         return Common.getModelsDirectory(this.rconnection);
     }
 
+    public String getForecastsCacheDirectory() throws REXPMismatchException, REngineException {
+        return Common.getForecastsCacheDirectory(this.rconnection);
+    }
+
     private void sourceTimeSeriesFunctions() throws REXPMismatchException, REngineException {
         //SOURCE TIME SERIES FUNCTIONS
         String sourceFunctionsStatement = "source(\"" + this.Rfunctions_path + "\")";

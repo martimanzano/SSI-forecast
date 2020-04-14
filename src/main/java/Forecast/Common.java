@@ -73,7 +73,12 @@ public class Common {
     }
 
     static String getModelsDirectory(RConnection rconnection) throws REXPMismatchException, REngineException {
-        String getwd = "try(eval(paste(getwd(), directoryToSave, sep = '/')))";
+        String getwd = "try(eval(paste(getwd(), directoryToSaveModels, sep = '/')))";
+        return getRvariable(rconnection, getwd)[0];
+    }
+
+    static String getForecastsCacheDirectory(RConnection rconnection) throws REXPMismatchException, REngineException {
+        String getwd = "try(eval(paste(getwd(), directoryToSaveForecasts, sep = '/')))";
         return getRvariable(rconnection, getwd)[0];
     }
 
