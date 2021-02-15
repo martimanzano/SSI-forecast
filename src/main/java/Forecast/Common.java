@@ -20,16 +20,11 @@ public class Common {
      * HYBRID: Forecasting by Hybrid Models
      * PROPHET: Prophet Forecaster by Facebook
      */
-    public enum ForecastTechnique {
-        ARIMA, ARIMA_FORCE_SEASONALITY, THETA, ETS, ETSDAMPED, BAGGEDETS, STL, NN, HYBRID, PROPHET
+    public enum ForecastMethod {
+        ARIMA, ARIMA_FORCE_SEASONALITY, THETA, ETS, ETSDAMPED, BAGGEDETS, MSTLM, NN, HYBRID, PROPHET, TBATS, NAIVE
     }
-//    static String meanR = "$mean";
-//    static String upper1 = "$upper[,1]";
-//    static String upper2 = "$upper[,2]";
-//    static String lower1 = "$lower[,1]";
-//    static String lower = "$lower[,2]";
 
-    static void evaluateR(RConnection rconnection, String Rcode)
+    public static REXP evaluateR(RConnection rconnection, String Rcode)
             throws REXPMismatchException, REngineException {
         REXP rResponseObject = null;
         rResponseObject = rconnection.parseAndEval(
@@ -44,6 +39,7 @@ public class Common {
             }
         } else {
             System.out.println("EVAL OK: " + Rcode);// + rResponseObject.asString());
+            return rResponseObject;
         }
     }
 

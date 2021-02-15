@@ -1,10 +1,10 @@
-# qrapids-forecast ![](https://img.shields.io/badge/License-Apache2.0-blue.svg)
-Library providing forecasting for the quality model elements.
+# SSI-forecast ![](https://img.shields.io/badge/License-Apache2.0-blue.svg)
+Library providing forecasting for SSIs and their hierarchical components.
 
-This component has been created as a result of the Q-Rapids project funded by the European Union Horizon 2020 Research and Innovation programme under grant agreement No 732253.
+This component has been partially created as a result of the Q-Rapids project funded by the European Union Horizon 2020 Research and Innovation programme under grant agreement No 732253.
 
 ## Main Functionality
-This library connects with an R server in order to forecast the quality model elements.
+This library connects with an R server in order to forecast.
 
 ## Technologies
 |Property|Description|
@@ -20,7 +20,7 @@ This is a Gradle project. You can use any IDE that supports Gradle to build it, 
 
 ```
 # Example: using Gradle wrapper to build with dependencies
-cd qrapids-forecast
+cd SSI-forecast
 gradlew jar
 ```
 After the build is done the JAR file can be found at the __build/libs__ directory
@@ -38,6 +38,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
 ## Contact
-For problems regarding this component, please open an issue in the [issues section](https://github.com/q-rapids/qrapids-forecast/issues). You can find some guidelines for submitting issues in the [Q-Rapids repository](https://github.com/q-rapids/q-rapids/blob/master/CONTRIBUTING.md).
+For problems regarding this component, please open an issue in the [issues section](https://github.com/martimanzano/SSI-forecast/issues).
 
-For general information, please use the [Q-Rapids project website](http://www.q-rapids.eu/contact).
+

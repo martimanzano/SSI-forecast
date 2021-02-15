@@ -31,211 +31,211 @@ public class ForecastTests {
 
     @Test
     public void test_training_arima() throws REXPMismatchException, REngineException, IOException {
-        String model_file = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.ARIMA.toString();
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.ARIMA.toString();
+        String model_file = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.ARIMA.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.ARIMA.toString();
         Files.deleteIfExists(new File(model_file).toPath());
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastTechnique.ARIMA);
+        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastMethod.ARIMA);
         Assert.assertTrue(Files.exists(new File(model_file).toPath()));
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 
     @Test
     public void test_forecasting_arima() throws REXPMismatchException, REngineException, IOException {
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.ARIMA.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.ARIMA.toString();
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastTechnique.ARIMA);
+        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastMethod.ARIMA);
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 
     @Test
     public void test_training_arima_force_seasonality() throws REXPMismatchException, REngineException, IOException {
-        String pathToFile = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.ARIMA_FORCE_SEASONALITY.toString();
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.ARIMA_FORCE_SEASONALITY.toString();
+        String pathToFile = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.ARIMA_FORCE_SEASONALITY.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.ARIMA_FORCE_SEASONALITY.toString();
         Files.deleteIfExists(new File(pathToFile).toPath());
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastTechnique.ARIMA_FORCE_SEASONALITY);
+        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastMethod.ARIMA_FORCE_SEASONALITY);
         Assert.assertTrue(Files.exists(new File(pathToFile).toPath()));
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 
     @Test
     public void test_forecasting_arima_force_seasonality() throws REXPMismatchException, REngineException, IOException {
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.ARIMA_FORCE_SEASONALITY.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.ARIMA_FORCE_SEASONALITY.toString();
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastTechnique.ARIMA_FORCE_SEASONALITY);
+        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastMethod.ARIMA_FORCE_SEASONALITY);
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 
     @Test
     public void test_training_theta() throws REXPMismatchException, REngineException, IOException {
-        String pathToFile = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.THETA.toString();
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.THETA.toString();
+        String pathToFile = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.THETA.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.THETA.toString();
         Files.deleteIfExists(new File(pathToFile).toPath());
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastTechnique.THETA);
+        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastMethod.THETA);
         Assert.assertTrue(Files.exists(new File(pathToFile).toPath()));
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 
     @Test
     public void test_forecasting_theta() throws REXPMismatchException, REngineException, IOException {
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.THETA.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.THETA.toString();
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastTechnique.THETA);
+        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastMethod.THETA);
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 
     @Test
     public void test_training_ets() throws REXPMismatchException, REngineException, IOException {
-        String pathToFile = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.ETS.toString();
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.ETS.toString();
+        String pathToFile = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.ETS.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.ETS.toString();
         Files.deleteIfExists(new File(pathToFile).toPath());
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastTechnique.ETS);
+        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastMethod.ETS);
         Assert.assertTrue(Files.exists(new File(pathToFile).toPath()));
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 
     @Test
     public void test_forecasting_ets() throws REXPMismatchException, REngineException, IOException {
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.ETS.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.ETS.toString();
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastTechnique.ETS);
+        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastMethod.ETS);
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 
     @Test
     public void test_training_etsdamped() throws REXPMismatchException, REngineException, IOException {
-        String pathToFile = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.ETSDAMPED.toString();
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.ETSDAMPED.toString();
+        String pathToFile = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.ETSDAMPED.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.ETSDAMPED.toString();
         Files.deleteIfExists(new File(pathToFile).toPath());
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastTechnique.ETSDAMPED);
+        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastMethod.ETSDAMPED);
         Assert.assertTrue(Files.exists(new File(pathToFile).toPath()));
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 
     @Test
     public void test_forecasting_etsdamped() throws REXPMismatchException, REngineException, IOException {
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.ETSDAMPED.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.ETSDAMPED.toString();
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastTechnique.ETSDAMPED);
+        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastMethod.ETSDAMPED);
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 
     @Test
     public void test_training_baggedets() throws REXPMismatchException, REngineException, IOException {
-        String pathToFile = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.BAGGEDETS.toString();
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.BAGGEDETS.toString();
+        String pathToFile = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.BAGGEDETS.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.BAGGEDETS.toString();
         Files.deleteIfExists(new File(pathToFile).toPath());
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastTechnique.BAGGEDETS);
+        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastMethod.BAGGEDETS);
         Assert.assertTrue(Files.exists(new File(pathToFile).toPath()));
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 
     @Test
     public void test_forecasting_baggedets() throws REXPMismatchException, REngineException, IOException {
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.BAGGEDETS.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.BAGGEDETS.toString();
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastTechnique.BAGGEDETS);
+        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastMethod.BAGGEDETS);
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 
     @Test
     public void test_training_stl() throws REXPMismatchException, REngineException, IOException {
-        String pathToFile = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.STL.toString();
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.STL.toString();
+        String pathToFile = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.MSTLM.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.MSTLM.toString();
         Files.deleteIfExists(new File(pathToFile).toPath());
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastTechnique.STL);
+        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastMethod.MSTLM);
         Assert.assertTrue(Files.exists(new File(pathToFile).toPath()));
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 
     @Test
     public void test_forecasting_stl() throws REXPMismatchException, REngineException, IOException {
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.STL.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.MSTLM.toString();
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastTechnique.STL);
+        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastMethod.MSTLM);
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 
     @Test
     public void test_training_NN() throws REXPMismatchException, REngineException, IOException {
-        String pathToFile = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.NN.toString();
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.NN.toString();
+        String pathToFile = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.NN.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.NN.toString();
         Files.deleteIfExists(new File(pathToFile).toPath());
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastTechnique.NN);
+        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastMethod.NN);
         Assert.assertTrue(Files.exists(new File(pathToFile).toPath()));
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 
     @Test
     public void test_forecasting_NN() throws REXPMismatchException, REngineException, IOException {
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.NN.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.NN.toString();
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastTechnique.NN);
+        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastMethod.NN);
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 
     @Test
     public void test_training_Hybrid() throws REXPMismatchException, REngineException, IOException {
-        String pathToFile = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.HYBRID.toString();
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.HYBRID.toString();
+        String pathToFile = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.HYBRID.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.HYBRID.toString();
         Files.deleteIfExists(new File(pathToFile).toPath());
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastTechnique.HYBRID);
+        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastMethod.HYBRID);
         Assert.assertTrue(Files.exists(new File(pathToFile).toPath()));
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 
     @Test
     public void test_forecasting_Hybrid() throws REXPMismatchException, REngineException, IOException {
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.HYBRID.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.HYBRID.toString();
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastTechnique.HYBRID);
+        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastMethod.HYBRID);
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 
     @Test
     public void test_training_Prophet() throws REXPMismatchException, REngineException, IOException {
-        String pathToFile = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.PROPHET.toString();
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.PROPHET.toString();
+        String pathToFile = models_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.PROPHET.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.PROPHET.toString();
         Files.deleteIfExists(new File(pathToFile).toPath());
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastTechnique.PROPHET);
+        rForecast.trainForecastModel(element_name, index, tsFrequency, Common.ForecastMethod.PROPHET);
         Assert.assertTrue(Files.exists(new File(pathToFile).toPath()));
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 
     @Test
     public void test_forecasting_Prophet() throws REXPMismatchException, REngineException, IOException {
-        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastTechnique.PROPHET.toString();
+        String forecast_file = for_cache_dir + "/" + element_name + "_" + index + "_" + Common.ForecastMethod.PROPHET.toString();
         Files.deleteIfExists(new File(forecast_file).toPath());
 
-        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastTechnique.PROPHET);
+        rForecast.forecast(element_name, index, tsFrequency, tsForecastHorizon, Common.ForecastMethod.PROPHET);
         Assert.assertTrue(Files.exists(new File(forecast_file).toPath()));
     }
 

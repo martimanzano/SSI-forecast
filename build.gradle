@@ -1,8 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'maven'
 
-group = 'com.upc.gessi.qrapids'
-version = '0.4'
+group = 'com.upc.gessi.SSI'
+version = '1'
 
 description = """"""
 
@@ -15,11 +15,22 @@ javadoc {
     options.addStringOption("nonavbar", "-quiet")
 }
 
+task customFatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'Assessment.SIAssessment'
+    }
+    baseName = 'SSI-forecast'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
 repositories {
      mavenCentral()
 }
 
 dependencies {
+    compile files('libs/qrapids-si_assessment-0.51.jar')
+    compile files('libs/qrapids-qma-elastic-0.18.jar')
     compile group: 'org.nuiton.thirdparty', name: 'Rserve', version:'1.7-3'
     compile group: 'org.nuiton.thirdparty', name: 'REngine', version:'1.7-3'
     compile group: 'org.testng', name: 'testng', version:'6.14.2'

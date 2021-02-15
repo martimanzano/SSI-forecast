@@ -35,6 +35,8 @@ public class ForecastDTO {
         this.id = id;
     }
 
+    public boolean hasError() { return (!(this.error == null) && !(this.error.isEmpty())); }
+
     public double[] getLower80() {
         return lower80;
     }

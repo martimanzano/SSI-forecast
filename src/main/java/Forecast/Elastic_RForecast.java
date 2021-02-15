@@ -1,22 +1,25 @@
 package Forecast;
 
+import Assessment.DTOSIAssessment;
+import Assessment.SIAssessment;
 import org.rosuda.REngine.REXPMismatchException;
 import org.rosuda.REngine.REngineException;
 import org.rosuda.REngine.Rserve.RConnection;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class Elastic_RForecast {
-    private String es_host;
-    private int es_port;
-    private String es_path;
-    private String es_user;
-    private String es_pwd;
-    private String rserve_host;
-    private int rserve_port;
+    private final String es_host;
+    private final int es_port;
+    private final String es_path;
+    private final String es_user;
+    private final String es_pwd;
+    private final String rserve_host;
+    private final int rserve_port;
     private RConnection rconnection = null;
-    private String Rfunctions_path;
+    private final String Rfunctions_path;
 
     /**
      * Connects with RServe and sources the script's functions to R
@@ -120,6 +123,8 @@ public class Elastic_RForecast {
         this.initializeR();
     }
 
+    public RConnection getRconnection() {return this.rconnection;}
+
     private void initializeR() throws REXPMismatchException, REngineException {
         this.rconnection = new RConnection(this.rserve_host, this.rserve_port);
         sourceTimeSeriesFunctions();
@@ -143,10 +148,13 @@ public class Elastic_RForecast {
 
     private void sourceTimeSeriesFunctions() throws REXPMismatchException, REngineException {
         //SOURCE TIME SERIES FUNCTIONS
-        String sourceFunctionsStatement = "source(\"" + this.Rfunctions_path + "\")";
+        sourceFile(this.Rfunctions_path);
+    }
 
-        Common.evaluateR(this.rconnection, sourceFunctionsStatement);
-        System.out.println("TIME SERIES FUNCTIONS SOURCED");// + rResponseObject.asString());
+    public void sourceFile(String path) throws REXPMismatchException, REngineException {
+        String sourceFileStatement = "source(\"" + path + "\")";
+        Common.evaluateR(this.rconnection, sourceFileStatement);
+        System.out.println(path + " SOURCED");
     }
 
     private void initESConnection() throws REXPMismatchException, REngineException {
@@ -164,13 +172,29 @@ public class Elastic_RForecast {
      * Get the names of the forecasting techniques available
      * @return Common.ForecastingTechnique[]
      */
-    public Common.ForecastTechnique[] getForecastTechniques () throws REXPMismatchException, REngineException {
+    public Common.ForecastMethod[] getForecastTechniques () throws REXPMismatchException, REngineException {
         String scriptAvailableMethods[] = Common.getAvailableMethods(this.rconnection);
-        Common.ForecastTechnique availableToReturn[] = new Common.ForecastTechnique[scriptAvailableMethods.length];
+        Common.ForecastMethod availableToReturn[] = new Common.ForecastMethod[scriptAvailableMethods.length];
         for (int i = 0; i < scriptAvailableMethods.length; i++) {
-            availableToReturn[i] = Common.ForecastTechnique.valueOf(scriptAvailableMethods[i]);
+            availableToReturn[i] = Common.ForecastMethod.valueOf(scriptAvailableMethods[i]);
         }
         return availableToReturn;
+    }
+
+    public boolean[] testAutocorrelation(String elementNames[], String index, String[] tsFrequency, String dateFrom,
+                                         String dateTo)
+            throws REXPMismatchException, REngineException {
+        boolean[] haveAutocorrelation = new boolean[elementNames.length];
+        for (int i = 0; i < elementNames.length; i++) {
+            Common.evaluateR(this.getRconnection(), "dateFrom <<- \"" + dateFrom + "\"");
+            Common.evaluateR(this.getRconnection(), "dateTo <<- \"" + dateTo + "\"");
+
+            String autocorrTestCall = "autoCorrelationTestWrapper(elementName = \"" + elementNames[i] + "\", " +
+                    "index = \"" + index + "\", " + "tsFrequency = " + tsFrequency[i] + ")";
+
+            haveAutocorrelation[i] = Boolean.parseBoolean(Common.evaluateR(this.rconnection, autocorrTestCall).asString());
+        }
+        return haveAutocorrelation;
     }
 
     /**
@@ -190,7 +214,7 @@ public class Elastic_RForecast {
      * @throws REngineException
      */
     public String[] multipleElementTrain(String elementNames[], String index, String tsFrequency,
-                                                          Common.ForecastTechnique technique)
+                                                          Common.ForecastMethod technique)
             throws REXPMismatchException, REngineException {
         String trainResult[] = new String[elementNames.length];
 
@@ -225,13 +249,46 @@ public class Elastic_RForecast {
      * @throws REngineException
      */
     public ArrayList<ForecastDTO> multipleElementForecast(String elementNames[], String index, String tsFrequency,
-                                                       String horizon, Common.ForecastTechnique technique)
+                                                       String horizon, Common.ForecastMethod technique)
             throws REXPMismatchException, REngineException {
         ArrayList<ForecastDTO> forecasts = new ArrayList<>();
         for (String elementName : elementNames) {
             forecasts.add(forecast(elementName, index, tsFrequency, horizon, technique));
         }
         return forecasts;
+    }
+
+    public ForecastDTO[] multipleElementForecast(String elementNames[], String index, String[] tsFrequency,
+                                                          String horizon, Common.ForecastMethod[] technique,
+                                                          String dateTrainFrom, String dateTrainTo)
+            throws REXPMismatchException, REngineException {
+        ForecastDTO[] forecasts = new ForecastDTO[elementNames.length];
+        for (int i = 0; i < elementNames.length; i++) {
+            Common.evaluateR(this.getRconnection(), "dateFrom <<- \"" + dateTrainFrom + "\"");
+            Common.evaluateR(this.getRconnection(), "dateTo <<- \"" + dateTrainTo + "\"");
+            forecasts[i] = forecast(elementNames[i], index, tsFrequency[i], horizon, technique[i]);
+        }
+        return forecasts;
+    }
+
+    public DTOSIAssessment[] forecastSI(String[] elementNames, String[] tsFrequencies,
+                                        Common.ForecastMethod[] technique, String index, String horizon,
+                                        String IDSI, double[][] intervals_per_element, String dateTrainFrom,
+                                        String dateTrainTo, File BNFile)
+            throws Exception {
+        // First step: forecast numeric values
+        ForecastDTO[] forecasts = multipleElementForecast(elementNames, index, tsFrequencies, horizon,
+                technique, dateTrainFrom, dateTrainTo);
+
+        // Second step: Feed the BN with the forecasted values and needed parameters
+        System.out.println("FORECASTED VALUES TO FEED THE BN : \n" + forecasts.toString());
+        DTOSIAssessment[] forecastedAssessments = new DTOSIAssessment[Integer.parseInt(horizon)];
+        for (int i = 0; i < forecastedAssessments.length; i++) {
+            forecastedAssessments[i] = SIAssessment.AssessSI(IDSI, elementNames, Utils.buildDayForecastedValues(forecasts, i),
+                    intervals_per_element, BNFile);
+            System.out.println("Horizon: " + i + "\n Numeric values: " + Arrays.toString(Utils.buildDayForecastedValues(forecasts, i)));
+        }
+        return forecastedAssessments;
     }
 
     /**
@@ -251,7 +308,7 @@ public class Elastic_RForecast {
      * @throws REngineException
      */
     public void trainForecastModel(String elementName, String index, String tsFrequency,
-                                 Common.ForecastTechnique technique) throws REXPMismatchException, REngineException {
+                                 Common.ForecastMethod technique) throws REXPMismatchException, REngineException {
         switch (technique) {
                 case ARIMA:
                     System.out.println("FITTING ARIMA MODEL");
@@ -277,9 +334,13 @@ public class Elastic_RForecast {
                     System.out.println("FITTING BAGGED ETS MODEL (THIS CAN TAKE A WHILE)");
                     trainBaggedETSModel(elementName, index, tsFrequency);
                     break;
-                case STL:
+                case MSTLM:
                     System.out.println("FITTING STL MODEL");
                     trainSTLModel(elementName, index, tsFrequency);
+                    break;
+            case TBATS:
+                    System.out.println("FITTING TBATS MODEL");
+                    trainTBATSModel(elementName, index, tsFrequency);
                     break;
                 case NN:
                     System.out.println("FITTING NEURAL NETWORK (NNETA) MODEL");
@@ -317,7 +378,7 @@ public class Elastic_RForecast {
      * @throws REngineException
      */
     public ForecastDTO forecast(String elementName, String index, String tsFrequency, String horizon,
-                                      Common.ForecastTechnique technique)
+                                      Common.ForecastMethod technique)
             throws REXPMismatchException, REngineException {
         switch (technique) {
             case ARIMA:
@@ -338,9 +399,12 @@ public class Elastic_RForecast {
             case BAGGEDETS:
                 System.out.println("FORECASTING WITH BAGGED ETS MODEL");
                 return forecastBaggedETSModel(elementName, index, tsFrequency, horizon);
-            case STL:
+            case MSTLM:
                 System.out.println("FORECASTING WITH STL MODEL");
                 return forecastSTLModel(elementName, index, tsFrequency, horizon);
+            case TBATS:
+                System.out.println("FORECASTING WITH TBATS MODEL");
+                return forecastTBATSModel(elementName, index, tsFrequency, horizon);
             case NN:
                 System.out.println("FORECASTING WITH NEURAL NETWORK (NNETA) MODEL (THIS CAN TAKE A WHILE)");
                 return forecastNNModel(elementName, index, tsFrequency, horizon);
@@ -432,10 +496,26 @@ public class Elastic_RForecast {
 
     private ForecastDTO forecastSTLModel(String elementName, String index, String frequencyts,
                                                String tsForecastHorizon)  throws REXPMismatchException, REngineException {
-        String baggedETSForecastCall = "forecastSTLWrapper(name = \"" + elementName + "\", " + "index = \"" + index + "\", " +
+        String STLforecastCall = "forecastSTLWrapper(name = \"" + elementName + "\", " + "index = \"" + index + "\", " +
                 "frequencyts = " + frequencyts + ", " + "horizon = " + tsForecastHorizon + ")";
 
-        return Common.evaluateRforecast(this.rconnection, baggedETSForecastCall, elementName);
+        return Common.evaluateRforecast(this.rconnection, STLforecastCall, elementName);
+    }
+
+    private void trainTBATSModel(String elementName, String index, String frequencyts)
+            throws REXPMismatchException, REngineException {
+        String TBATSModelTrainCall = "trainTBATSModel(name = \"" + elementName + "\", " + "index = \"" + index + "\", " +
+                "frequencyts = " + frequencyts + ")";
+
+        Common.evaluateR(this.rconnection, TBATSModelTrainCall);
+    }
+
+    private ForecastDTO forecastTBATSModel(String elementName, String index, String frequencyts,
+                                         String tsForecastHorizon)  throws REXPMismatchException, REngineException {
+        String TBATSForecastCall = "forecastTBATSWrapper(name = \"" + elementName + "\", " + "index = \"" + index + "\", " +
+                "frequencyts = " + frequencyts + ", " + "horizon = " + tsForecastHorizon + ")";
+
+        return Common.evaluateRforecast(this.rconnection, TBATSForecastCall, elementName);
     }
 
     private void trainNNModel(String elementName, String index, String frequencyts)
